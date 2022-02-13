@@ -1,0 +1,250 @@
+﻿<Window x:Class="SensorVisualizer.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SensorVisualizer.WPF"
+        xmlns:core="clr-namespace:SensorVisualizer.Core;assembly=SensorVisualizer.Core"
+        xmlns:coreModels="clr-namespace:SensorVisualizer.Core.Models;assembly=SensorVisualizer.Core"
+        xmlns:models="clr-namespace:SensorVisualizer.WPF.Models"
+        xmlns:converters="clr-namespace:SensorVisualizer.WPF.Converters"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        d:DataContext="{d:DesignInstance Type=models:MainWindowDataContext}"
+        Background="{StaticResource PrimaryColor}"
+        Title="MainWindow" WindowState="Maximized" Height="600" MinHeight="600" Width="1000" MinWidth="1000">
+    <Window.Resources>
+        <converters:SensorLocationConverter x:Key="SensorLocationConverter"/>
+        <converters:SensorTemperatureConverter x:Key="SensorTemperatureConverter"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <models:MainWindowDataContext/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel>
+            <DockPanel.Style>
+                <Style TargetType="DockPanel">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=SensorsLoading}" Value="True">
+                            <Setter Property="Opacity" Value="0.5"/>
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DockPanel.Style>
+
+            <Border DockPanel.Dock="Top" Margin="5" CornerRadius="5" BorderThickness="1" BorderBrush="{StaticResource SeconderyColor}">
+                <DockPanel Margin="5">
+                    <TextBlock VerticalAlignment="Center" Text="↻" ToolTip="Refresh" FontSize="{StaticResource SearchBoxFontSize}" DockPanel.Dock="Right" Cursor="Hand" Foreground="{StaticResource SeconderyColor}" FontWeight="Bold" FontFamily="Arial" MouseLeftButtonDown="Refresh_MouseLeftButtonDown"/>
+                    <Grid>
+                        <TextBox x:Name="Search_textbox" FontSize="{StaticResource SearchBoxFontSize}" Background="Transparent" Foreground="{StaticResource SeconderyColor}" BorderThickness="0" KeyDown="Search_textbox_KeyDown"/>
+                        <TextBlock IsHitTestVisible="False" FontSize="{StaticResource SearchBoxFontSize}" Foreground="{StaticResource SeconderyColor}" Opacity="0.5" Text="Search..." Margin="5,0,0,0" FontFamily="Segoe UI Light">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=Search_textbox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </DockPanel>
+            </Border>
+
+            <Grid>
+                <!--Loading-->
+                <Control>
+                    <Control.Style>
+                        <Style TargetType="Control" BasedOn="{StaticResource BusyAnimationStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=SensorsLoading}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </Style>
+                    </Control.Style>
+                </Control>
+
+                <DockPanel>
+                    <!--Paging-->
+                    <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
+                        <Border BorderThickness="1" Margin="0,0,5,0" ToolTip="Next page" BorderBrush="{StaticResource SeconderyColor}" Background="Transparent" Width="{StaticResource PagingButtomRadius}" Height="{StaticResource PagingButtomRadius}" CornerRadius="{Binding Source={StaticResource PagingButtomRadius}}" Cursor="Hand" MouseLeftButtonUp="PreviosPageButton_Click">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=PagingContext.EnablePrevButton}" Value="False">
+                                            <Setter Property="Visibility" Value="Hidden"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="&lt;" ToolTip="Previos page" FontFamily="Times New Roman" IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource SeconderyColor}" FontSize="{StaticResource PagingButtomFontSize}" FontWeight="Bold"/>
+                        </Border>
+                        <TextBlock Text="{Binding Path=PagingContext.CurrentPage}" FontFamily="Microsoft YaHei Light" Foreground="{StaticResource SeconderyColor}" FontSize="{StaticResource PagingButtomFontSize}" VerticalAlignment="Center" d:Text="2"/>
+                        <TextBlock Text="/" Foreground="{StaticResource SeconderyColor}" FontFamily="Microsoft YaHei Light" VerticalAlignment="Center" FontSize="{StaticResource PagingButtomFontSize}"/>
+                        <TextBlock Text="{Binding Path=PagingContext.TotalPages}" FontFamily="Microsoft YaHei Light" Foreground="{StaticResource SeconderyColor}" FontSize="{StaticResource PagingButtomFontSize}" VerticalAlignment="Center" d:Text="5"/>
+                        <Border BorderThickness="1" Margin="5,0,0,0" ToolTip="Next page" BorderBrush="{StaticResource SeconderyColor}" Background="Transparent" Width="{StaticResource PagingButtomRadius}" Height="{StaticResource PagingButtomRadius}" CornerRadius="{Binding Source={StaticResource PagingButtomRadius}}" Cursor="Hand" MouseLeftButtonUp="NextPageButton_Click">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=PagingContext.EnableNextButton}" Value="False">
+                                            <Setter Property="Visibility" Value="Hidden"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="&gt;" FontFamily="Times New Roman" IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource SeconderyColor}" FontSize="{StaticResource PagingButtomFontSize}" FontWeight="Bold"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!--Sensors-->
+                    <Grid Background="Transparent">
+                        <Viewbox IsHitTestVisible="False">
+                            <Viewbox.Style>
+                                <Style TargetType="Viewbox">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=Sensors.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </Style>
+                            </Viewbox.Style>
+                            <TextBlock Padding="100" Text="List is empty!" Foreground="{StaticResource SeconderyColor}" FontFamily="Segoe UI Light" FontWeight="Normal"/>
+                        </Viewbox>
+                        <ListBox x:Name="SensorsListBox" ItemsSource="{Binding Sensors}" SelectionChanged="ListBox_SelectionChanged" Margin="10" SelectionMode="Single" Background="Transparent" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                            <ListBox.Style>
+                                <Style TargetType="ListBox">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=Sensors.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Hidden"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.Style>
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="{x:Static core:AppConsts.SensorsPageRows}" Rows="{x:Static core:AppConsts.SensorsPageCols}"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type coreModels:Sensor}">
+                                    <Border BorderBrush="{StaticResource SeconderyColor}" BorderThickness="2" CornerRadius="20" Margin="5">
+                                        <Grid Margin="10">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Viewbox Grid.Row="0">
+                                                <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding Name}" Foreground="{StaticResource SeconderyColor}" FontFamily="Yu Gothic UI"/>
+                                            </Viewbox>
+                                            <Viewbox Grid.Row="1">
+                                                <TextBlock FontWeight="Light" Text="{Binding Converter={StaticResource SensorTemperatureConverter}}" Foreground="{StaticResource SeconderyColor}"/>
+                                            </Viewbox>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </DockPanel>
+            </Grid>
+        </DockPanel>
+
+        <Border Grid.Column="1" BorderThickness="2,0,0,0" BorderBrush="{StaticResource SeconderyColor}" CornerRadius="30" Background="Transparent">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="7" ShadowDepth="0" Color="{Binding Path=Color, Source={StaticResource SeconderyColor}}"/>
+            </Border.Effect>
+        </Border>
+        <Viewbox Grid.Column="1">
+            <TextBlock Padding="20" Text="Select sensor..." Foreground="{StaticResource SeconderyColor}" FontWeight="Light"/>
+            <Viewbox.Style>
+                <Style TargetType="Viewbox">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedIndex, ElementName=SensorsListBox}" Value="-1">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </Viewbox.Style>
+        </Viewbox>
+
+        <!--Loading-->
+        <Control Grid.Column="1">
+            <Control.Style>
+                <Style TargetType="Control" BasedOn="{StaticResource BusyAnimationStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=SensorViewLoading}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </Control.Style>
+        </Control>
+        <Grid Grid.Column="1" Margin="10">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=SensorViewLoading}" Value="True">
+                            <Setter Property="Opacity" Value="0.5"/>
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SelectedIndex, ElementName=SensorsListBox}" Value="-1">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Visibility" Value="Visible"/>
+                </Style>
+            </Grid.Style>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" CornerRadius="20">
+                <Border.Background>
+                    <ImageBrush x:Name="SensorViewLocationImage" Stretch="Fill"/>
+                </Border.Background>
+            </Border>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <Viewbox Grid.Row="0">
+                    <TextBox x:Name="SensorViewTitle" d:Text="Sensor1" Foreground="{StaticResource SeconderyColor}" IsReadOnly="True" Background="Transparent" BorderThickness="0"/>
+                </Viewbox>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Measured" HorizontalAlignment="Center" Foreground="{StaticResource SeconderyColor}" FontSize="30" Margin="0,0,0,10"/>
+                        <TextBlock x:Name="SensorViewMeasuredTemp" d:Text="24 °C" HorizontalAlignment="Center" Foreground="{StaticResource SeconderyColor}" FontSize="30"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Real" HorizontalAlignment="Center" Foreground="{StaticResource SeconderyColor}" FontSize="30" Margin="0,0,0,10"/>
+                        <TextBlock x:Name="SensorViewRealTemp" d:Text="24 °C" HorizontalAlignment="Center" Foreground="{StaticResource SeconderyColor}" FontSize="30"/>
+                    </StackPanel>
+                </Grid>
+                <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                    <TextBlock Text="Location: " Foreground="{StaticResource SeconderyColor}"/>
+                    <TextBox x:Name="SensorViewLocation" d:Text="(102.25, 45.65)" Foreground="{StaticResource SeconderyColor}" BorderThickness="0" Background="Transparent" IsReadOnly="True"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

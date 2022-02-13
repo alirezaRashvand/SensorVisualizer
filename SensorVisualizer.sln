@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorVisualizer.WPF", "SensorVisualizer.WPF\SensorVisualizer.WPF.csproj", "{E006884E-D5E2-42FE-84EE-84CA0C1994D5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorVisualizer.Core", "SensorVisualizer.Core\SensorVisualizer.Core.csproj", "{AFFA7A68-D6EF-4372-B7B6-C88E16D6E0A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BD095303-2F75-4109-BC8F-6BBE9A9CADDD}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E006884E-D5E2-42FE-84EE-84CA0C1994D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E006884E-D5E2-42FE-84EE-84CA0C1994D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E006884E-D5E2-42FE-84EE-84CA0C1994D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E006884E-D5E2-42FE-84EE-84CA0C1994D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFFA7A68-D6EF-4372-B7B6-C88E16D6E0A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFFA7A68-D6EF-4372-B7B6-C88E16D6E0A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFFA7A68-D6EF-4372-B7B6-C88E16D6E0A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFFA7A68-D6EF-4372-B7B6-C88E16D6E0A8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E53C6CD1-DB88-428C-8E3F-22E79FE79C4B}
+	EndGlobalSection
+EndGlobal
