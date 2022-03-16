@@ -24,7 +24,7 @@ namespace SensorVisualizer.WPF.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value is Sensor sensor ? $"({sensor.Longitude:F}, {sensor.Latitude:F})" : throw new NotImplementedException();
+            return value is MapPoint sensor ? $"({sensor.Longitude:F}, {sensor.Latitude:F})" : throw new NotImplementedException();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

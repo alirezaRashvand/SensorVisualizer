@@ -106,55 +106,133 @@
                         </Border>
                     </StackPanel>
 
-                    <!--Sensors-->
-                    <Grid Background="Transparent">
-                        <Viewbox IsHitTestVisible="False">
-                            <Viewbox.Style>
-                                <Style TargetType="Viewbox">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Sensors.Count}" Value="0">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                    <Setter Property="Visibility" Value="Hidden"/>
-                                </Style>
-                            </Viewbox.Style>
-                            <TextBlock Padding="100" Text="List is empty!" Foreground="{StaticResource SeconderyColor}" FontFamily="Segoe UI Light" FontWeight="Normal"/>
-                        </Viewbox>
-                        <ListBox x:Name="SensorsListBox" ItemsSource="{Binding Sensors}" SelectionChanged="ListBox_SelectionChanged" Margin="10" SelectionMode="Single" Background="Transparent" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-                            <ListBox.Style>
-                                <Style TargetType="ListBox">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Sensors.Count}" Value="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Border IsHitTestVisible="False" BorderThickness="0,0,0,2" BorderBrush="{StaticResource SeconderyColor}" Background="Transparent"/>
+                        <DockPanel Grid.Row="0" Margin="10">
+                            <StackPanel VerticalAlignment="Center" DockPanel.Dock="Left">
+                                <Border CornerRadius="5" Width="35" Height="20" BorderThickness="1" BorderBrush="{StaticResource SeconderyColor}" Cursor="Hand" Background="Transparent" MouseLeftButtonDown="CustomPointAdd_MouseLeftButtonDown">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Add" FontSize="{StaticResource CustomAddButtonsSize}" Foreground="{StaticResource SeconderyColor}" FontFamily="Corbel Light"/>
+                                </Border>
+                                <Border Margin="0,5,0,0" Width="35" Height="20" CornerRadius="5" BorderThickness="1" BorderBrush="{StaticResource SeconderyColor}" Cursor="Hand" Background="Transparent" MouseLeftButtonDown="CustomPointEdit_MouseLeftButtonDown">
+                                    <TextBlock Padding="4" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Edit" FontSize="{StaticResource CustomAddButtonsSize}" Foreground="{StaticResource SeconderyColor}" FontFamily="Corbel Light"/>
+                                </Border>
+                                <Border Margin="0,5,0,0" Width="35" CornerRadius="5" BorderThickness="1" BorderBrush="{StaticResource SeconderyColor}" Cursor="Hand" Background="Transparent" MouseLeftButtonDown="CustomPointDelete_MouseLeftButtonDown">
+                                    <TextBlock Padding="4" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Delete" FontSize="{StaticResource CustomAddButtonsSize}" Foreground="{StaticResource SeconderyColor}" FontFamily="Corbel Light"/>
+                                </Border>
+                            </StackPanel>
+                            <Grid>
+                                <Viewbox IsHitTestVisible="False">
+                                    <Viewbox.Style>
+                                        <Style TargetType="Viewbox">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=CustomPoints.Count}" Value="0">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
                                             <Setter Property="Visibility" Value="Hidden"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ListBox.Style>
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid Columns="{x:Static core:AppConsts.SensorsPageRows}" Rows="{x:Static core:AppConsts.SensorsPageCols}"/>
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate DataType="{x:Type coreModels:Sensor}">
-                                    <Border BorderBrush="{StaticResource SeconderyColor}" BorderThickness="2" CornerRadius="20" Margin="5">
-                                        <Grid Margin="10">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="*"/>
-                                                <RowDefinition Height="*"/>
-                                            </Grid.RowDefinitions>
-                                            <Viewbox Grid.Row="0">
-                                                <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding Name}" Foreground="{StaticResource SeconderyColor}" FontFamily="Yu Gothic UI"/>
-                                            </Viewbox>
-                                            <Viewbox Grid.Row="1">
-                                                <TextBlock FontWeight="Light" Text="{Binding Converter={StaticResource SensorTemperatureConverter}}" Foreground="{StaticResource SeconderyColor}"/>
-                                            </Viewbox>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                                        </Style>
+                                    </Viewbox.Style>
+                                    <TextBlock Padding="100" Text="Add custom points..." Foreground="{StaticResource SeconderyColor}" FontFamily="Segoe UI Light" FontWeight="Normal"/>
+                                </Viewbox>
+
+                                <ListBox x:Name="CustomPointsListBox" ItemsSource="{Binding CustomPoints}" SelectionChanged="CustomPointsListBox_SelectionChanged" Margin="10" SelectionMode="Single" Background="Transparent" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                    <ListBox.Style>
+                                        <Style TargetType="ListBox">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=CustomPoints.Count}" Value="0">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ListBox.Style>
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <UniformGrid Columns="{x:Static core:AppConsts.CustomPointsPageRows}" Rows="{x:Static core:AppConsts.CustomPointsPageCols}"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type coreModels:MapPoint}">
+                                            <Border BorderBrush="{StaticResource SeconderyColor}" BorderThickness="2" CornerRadius="20" Margin="5">
+                                                <Grid Margin="10">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="*"/>
+                                                        <RowDefinition Height="*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Viewbox Grid.Row="0">
+                                                        <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding Name}" Foreground="{StaticResource SeconderyColor}" FontFamily="Yu Gothic UI"/>
+                                                    </Viewbox>
+                                                    <Viewbox Grid.Row="1">
+                                                        <TextBlock FontWeight="Light" Foreground="{StaticResource SeconderyColor}">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding StringFormat="{}{0:F}, {1:F}">
+                                                                    <Binding Path="Longitude"/>
+                                                                    <Binding Path="Latitude"/>
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                    </Viewbox>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </DockPanel>
+
+                        <!--Sensors-->
+                        <Grid Grid.Row="1">
+                            <Viewbox IsHitTestVisible="False">
+                                <Viewbox.Style>
+                                    <Style TargetType="Viewbox">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=Sensors.Count}" Value="0">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    </Style>
+                                </Viewbox.Style>
+                                <TextBlock Padding="100" Text="List is empty!" Foreground="{StaticResource SeconderyColor}" FontFamily="Segoe UI Light" FontWeight="Normal"/>
+                            </Viewbox>
+                            <ListBox x:Name="SensorsListBox" ItemsSource="{Binding Sensors}" SelectionChanged="SensorsListBox_SelectionChanged" Margin="10" SelectionMode="Single" Background="Transparent" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <ListBox.Style>
+                                    <Style TargetType="ListBox">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=Sensors.Count}" Value="0">
+                                                <Setter Property="Visibility" Value="Hidden"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.Style>
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="{x:Static core:AppConsts.SensorsPageRows}" Rows="{x:Static core:AppConsts.SensorsPageCols}"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type coreModels:Sensor}">
+                                        <Border BorderBrush="{StaticResource SeconderyColor}" BorderThickness="2" CornerRadius="20" Margin="5">
+                                            <Grid Margin="10">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <Viewbox Grid.Row="0">
+                                                    <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding Name}" Foreground="{StaticResource SeconderyColor}" FontFamily="Yu Gothic UI"/>
+                                                </Viewbox>
+                                                <Viewbox Grid.Row="1">
+                                                    <TextBlock FontWeight="Light" Text="{Binding Converter={StaticResource SensorTemperatureConverter}}" Foreground="{StaticResource SeconderyColor}"/>
+                                                </Viewbox>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
                     </Grid>
                 </DockPanel>
             </Grid>
@@ -166,11 +244,11 @@
             </Border.Effect>
         </Border>
         <Viewbox Grid.Column="1">
-            <TextBlock Padding="20" Text="Select sensor..." Foreground="{StaticResource SeconderyColor}" FontWeight="Light"/>
+            <TextBlock Padding="20" Text="Select sensor or custom point..." Foreground="{StaticResource SeconderyColor}" FontWeight="Light"/>
             <Viewbox.Style>
                 <Style TargetType="Viewbox">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedIndex, ElementName=SensorsListBox}" Value="-1">
+                        <DataTrigger Binding="{Binding ShouldSelect}" Value="True">
                             <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -191,6 +269,7 @@
                     <Setter Property="Visibility" Value="Collapsed"/>
                 </Style>
             </Control.Style>
+        
         </Control>
         <Grid Grid.Column="1" Margin="10">
             <Grid.Style>
@@ -200,7 +279,7 @@
                             <Setter Property="Opacity" Value="0.5"/>
                             <Setter Property="IsHitTestVisible" Value="False"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding SelectedIndex, ElementName=SensorsListBox}" Value="-1">
+                        <DataTrigger Binding="{Binding ShouldSelect}" Value="True">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -216,6 +295,10 @@
                 <Border.Background>
                     <ImageBrush x:Name="SensorViewLocationImage" Stretch="Fill"/>
                 </Border.Background>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                    <Button x:Name="MapZoomOut" Width="30" Height="30" Margin="0,0,10,5" Content="-" HorizontalContentAlignment="Center" FontWeight="Bold" FontFamily="Wide Latin" Click="MapZoomOut_Click"/>
+                    <Button x:Name="MapZoomIn" Width="30" Height="30" Margin="0,0,0,5" Content="+" HorizontalContentAlignment="Center" FontWeight="Bold" FontFamily="Wide Latin" Click="MapZoomIn_Click"/>
+                </StackPanel>
             </Border>
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>

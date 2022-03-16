@@ -9,6 +9,7 @@
         <SolidColorBrush x:Key="SeconderyColor" Color="White"/>
 
         <sys:Double x:Key="SearchBoxFontSize">20</sys:Double>
+        <sys:Double x:Key="CustomAddButtonsSize">10</sys:Double>
         
         <sys:Double x:Key="PagingButtomRadius">20</sys:Double>
         <sys:Double x:Key="PagingButtomFontSize">15</sys:Double>
